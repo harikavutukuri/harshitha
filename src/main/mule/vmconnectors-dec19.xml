@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8b8aa2a7-3b61-4494-9efb-1160cad2c794" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="ae29be15-42bc-4795-b2ba-ba402d4f73d7">
+		<vm:connection >
+			<reconnection >
+				<reconnect-forever />
+			</reconnection>
+		</vm:connection>
+		<vm:queues >
+			<vm:queue queueName="nq" />
+		</vm:queues>
+	</vm:config>
+	<flow name="vmconnectors-dec19Flow" doc:id="022e80c5-0847-4fe1-9a9f-9a77b311ae0f" >
+		<http:listener doc:name="Listener" doc:id="dfbcb135-9260-4730-a9fd-e58c189b4766" config-ref="HTTP_Listener_config" path="/vm"/>
+		<vm:publish queueName="nq" doc:name="Publish" doc:id="6037fdec-92e6-46d1-94d7-251f06c0a4b8" config-ref="VM_Config"/>
+	</flow>
+	<flow name="vmconnectors-dec19Flow1" doc:id="a5b4d281-83b4-4f05-be58-05f7c01dc476" initialState="stopped">
+		<vm:listener queueName="nq" doc:name="Listener" doc:id="cc295385-0867-414c-a885-c2181c14ae39" config-ref="VM_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="60d28777-9929-4075-9bc5-4b18fd2c4ff1" message="hii nani"/>
+	</flow>
+	<flow name="vmconnectors-dec19Flow2" doc:id="cb7a4c61-1fb6-4e71-9dba-8e0414f565fc" >
+		<http:listener doc:name="Listener" doc:id="1f7ff376-19aa-4c22-b7f9-bcaec6d7484e" config-ref="HTTP_Listener_config" path="/consume"/>
+		<vm:consume queueName="nq" doc:name="Consume" doc:id="9ba0e473-9c88-4264-937c-3e292f3e7460" config-ref="VM_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="256b3d7a-8104-4790-8c5b-10566bf6667b" message="ammu"/>
+	</flow>
+</mule>
